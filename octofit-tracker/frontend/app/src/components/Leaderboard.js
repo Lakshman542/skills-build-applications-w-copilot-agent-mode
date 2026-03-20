@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 const getApiUrl = (component) => {
-  const codespace = process.env.REACT_APP_CODESPACE_NAME;
+  let codespace = process.env.REACT_APP_CODESPACE_NAME;
+  if (!codespace) {
+    const match = window.location.host.match(/^([^-]+)-8000\.app\.github\.dev/);
+    if (match) codespace = match[1];
+  }
   const protocol = window.location.protocol;
   const port = '8000';
-  return `${protocol}//${codespace}-${port}.app.github.dev/api/${component}/`;
+  if (codespace) {
+    return `${protocol}//${codespace}-${port}.app.github.dev/api/${component}/`;
+  }
+  return `${protocol}//localhost:${port}/api/${component}/`;
 };
 
 const Leaderboard = () => {
